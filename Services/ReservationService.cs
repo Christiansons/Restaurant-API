@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant_API.Models.DTOs;
 using Restaurant_API.Repository.IRepository;
 using Restaurant_API.Services.IServices;
@@ -28,17 +29,12 @@ namespace Restaurant_API.Services
 		{
 			var response = new ReservationResponseDTO();
 
-			if(!await _tableRepo.CheckAvailabilty(reservationDto.timeFrom, reservationDto.PartySize))
-			{
-				response.AddError("No tables available for that time with your party size!");
-			}
-
-			if(reservationDto.CustomerName.Length < 2)
+			if (reservationDto.CustomerName.Length < 2)
 			{
 				response.AddError("Enter a longer name");
 			}
 
-			if(reservationDto.CustomerName.Length > 20)
+			if (reservationDto.CustomerName.Length > 20)
 			{
 				response.AddError("Enter a shorter name");
 			}
@@ -48,9 +44,17 @@ namespace Restaurant_API.Services
 				response.AddError("Invalid phone number, please enter a valid one!");
 			}
 
+			var AvailableTables = _tableRepo.CheckAvailabiltyAndReturnAvailableTables(reservationDto.timeFrom, reservationDto.PartySize);
+
+			if (AvailableTables == null)
+			{
+				response.AddError("No tables available for that time with your party size!");
+			}
+
 			_reservationRepo.SaveReservation();
 
 		}
+
 		//Check if table available, if not return Choose another table!
 
 		//Save customer and table to reservation

@@ -6,6 +6,6 @@ namespace Restaurant_API.Repository.IRepository
 	{
 		public Task<Table> SaveTable(Table table);
 		public Task<IEnumerable<Table>> GetAllTables();
-		public Task<bool> CheckAvailabilty(DateTime timeFrom, int partySize);
+		public Task<IEnumerable<Table>> CheckAvailabiltyAndReturnAvailableTables(DateTime timeFrom, int partySize)
 	}
 }

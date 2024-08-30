@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant_API.Data;
+using Restaurant_API.Models;
 using Restaurant_API.Repository.IRepository;
 
 namespace Restaurant_API.Repository
@@ -13,11 +13,20 @@ namespace Restaurant_API.Repository
             _context = context;
         }
 
-		public Task<bool> CheckAvailabilty(DateTime timeFrom, int partySize)
+		public async Task<IEnumerable<Table>> CheckAvailabiltyAndReturnAvailableTables(DateTime timeFrom, int partySize)
 		{
-			return _context.Tables
-				.Where(t=> t.Seats <= partySize)
-				.Where(t => t.Reservations.Any(r => r.DateTimeFrom != ))
+			return await _context.Tables
+				.Where(t=> t.Seats >= partySize)
+				.Where(t => !t.Reservations.Any(r => r.DateTimeFrom < timeFrom && r.DateTimeTo > timeFrom.AddHours(2)))
+				.ToListAsync();
+		}
+
+		public async Task<IEnumerable<Table>> GetAvailableTables(DateTime timeFrom, int partySize)
+		{
+			return await _context.Tables
+				.Where(t => t.Seats >= partySize)
+				.Where(t => t.Reservations.Any(r => r.DateTimeFrom < timeFrom && r.DateTimeTo != timeFrom.AddHours(2)))
+				.ToListAsync();
 		}
 
 		public async Task<IEnumerable<Table>> GetAllTables()
@@ -25,9 +34,28 @@ namespace Restaurant_API.Repository
 			return await _context.Tables.ToListAsync();
 		}
 
-		public Task<Table> SaveTable(Table table)
+		public async Task<Table> CreateTable(Table table)
 		{
-			throw new NotImplementedException();
+			await _context.Tables.AddAsync(table);
+			await _context.SaveChangesAsync();
+			return table;
+		}
+
+		public async Task DeleteTable(Table table)
+		{
+			Table tableToRemove = await _context.Tables.FindAsync(table);
+
+			if (tableToRemove != null)
+			{
+				_context.Tables.Remove(tableToRemove);
+				await _context.SaveChangesAsync();
+			}
+		}
+
+		public async Task UpdateTable(Table table)
+		{
+			_context.Tables.Update(table);
+			await _context.SaveChangesAsync();
 		}
 	}
 }
