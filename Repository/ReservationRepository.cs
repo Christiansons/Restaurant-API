@@ -12,19 +12,35 @@ namespace Restaurant_API.Repository
             _context = context;
         }
 
-        public async Task<Reservation> SaveReservation(Customer customer, Table table, DateTime from, DateTime to, int partySize)
+        public async Task<Reservation> SaveReservation(Reservation reservation)
 		{
-			Reservation reservation = new Reservation
-			{
-				CustomerIdFK = customer.Id,
-				TableNumberFK = table.TableNumber,
-				PartySize = partySize,
-				DateTimeFrom = from,
-				DateTimeTo = to
-			};
 			await _context.Reservations.AddAsync(reservation);
 			await _context.SaveChangesAsync();
 			return reservation;
+		}
+
+		public async Task<Table> CreateTable(Table table)
+		{
+			await _context.Tables.AddAsync(table);
+			await _context.SaveChangesAsync();
+			return table;
+		}
+
+		public async Task DeleteTable(Table table)
+		{
+			Table tableToRemove = await _context.Tables.FindAsync(table);
+
+			if (tableToRemove != null)
+			{
+				_context.Tables.Remove(tableToRemove);
+				await _context.SaveChangesAsync();
+			}
+		}
+
+		public async Task UpdateTable(Table table)
+		{
+			_context.Tables.Update(table);
+			await _context.SaveChangesAsync();
 		}
 	}
 }

@@ -24,10 +24,16 @@ namespace Restaurant_API
 			{
 				options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 			});
+			//Scope for repo
 			builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 			builder.Services.AddScoped<ITableRepository, TableRepository>();
 			builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+			builder.Services.AddScoped<IMenuRepository, MenuRepository>();
+			//Scope for service
 			builder.Services.AddScoped<IReservationService, ReservationService>();
+			builder.Services.AddScoped<ITableService, TableService>();
+			builder.Services.AddScoped<ICustomerService, CustomerService>();
+			builder.Services.AddScoped<IMenuService, MenuService>();
 
 			var app = builder.Build();
 

@@ -14,6 +14,6 @@ namespace Restaurant_API.Models
 		public int PriceInSek { get; set; }
 
 		[Required]
-        public bool Available { get; set; }
+        public bool IsAvailable { get; set; }
     }
 }

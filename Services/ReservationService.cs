@@ -18,12 +18,6 @@ namespace Restaurant_API.Services
 			_tableRepo = tableRepo;
 			_customerRepo = custRepo;
         }
-		
-
-		public Task OpenSlots() 
-		{ 
-			throw new NotImplementedException(); 
-		}
 
 		public async Task<ReservationResponseDTO> MakeReservation(ReservationDTO reservationDto)
 		{
