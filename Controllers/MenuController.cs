@@ -16,8 +16,8 @@ namespace Restaurant_API.Controllers
         }
 
         [HttpGet]
-		[Route("Menu")]
-		public async Task<ActionResult<IEnumerable<DishDTO>>> Menu()
+		[Route("")]
+		public async Task<ActionResult<IEnumerable<DishDTO>>> GetMenu()
 		{
 			var dishes = await _menuService.GetAllDishes();
 			if(dishes == null)
@@ -29,7 +29,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPost]
-		[Route("Menu/AddDish")]
+		[Route("add")]
 		public async Task<IActionResult> AddDish(DishDTO dish)
 		{
 			if(dish == null)
@@ -37,11 +37,42 @@ namespace Restaurant_API.Controllers
 				return BadRequest("Dish data cannot be empty.");
 			}
 
-			
+			try
+			{
+				await _menuService.CreateDish(dish);
+				return Ok("Dish created");
+			}
+			catch(ArgumentNullException ex)
+			{
+				return BadRequest("Error creating dish");
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+			}
 		}
 
-		[HttpGet]
-		[Route("Menu/FindItemById")]
-		public async Task<>
+		[HttpPost]
+		[Route("update")]
+		public async Task<IActionResult> UpdateDish(int dishId, DishDTO dto)
+		{
+			if(dto == null)
+			{
+				return BadRequest("Dish data cannot be empty");
+			}
+			try
+			{
+				await _menuService.UpdateDish(dishId, dto);
+				return Ok("Dish updated");
+			}
+			catch (ArgumentNullException ex)
+			{
+				return BadRequest("Error updating dish");
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+			}
+		}
 	}
 }

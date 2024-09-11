@@ -13,22 +13,15 @@ namespace Restaurant_API.Repository
             _context = context;
         }
 
-		public async Task<IEnumerable<Table>> CheckAvailabiltyAndReturnAvailableTables(DateTime timeFrom, int partySize)
-		{
-			return await _context.Tables
-				.Where(t=> t.Seats >= partySize)
-				.Where(t => !t.Reservations.Any(r => r.DateTimeFrom < timeFrom && r.DateTimeTo > timeFrom.AddHours(2)))
-				.ToListAsync();
-		}
+		//public async Task<IEnumerable<Table>> CheckAvailabiltyAndReturnAvailableTables(DateTime timeFrom, int partySize)
+		//{
+		//	return await _context.Tables
+		//		.Where(t=> t.Seats >= partySize)
+		//		.Where(t => !t.Reservations.Any(r => r.DateTimeFrom < timeFrom && r.DateTimeTo > timeFrom.AddHours(2)))
+		//		.ToListAsync();
+		//}
 
-		public async Task<IEnumerable<Table>> GetAvailableTables(DateTime timeFrom, int partySize)
-		{
-			return await _context.Tables
-				.Where(t => t.Seats >= partySize)
-				.Where(t => t.Reservations.Any(r => r.DateTimeFrom < timeFrom && r.DateTimeTo != timeFrom.AddHours(2)))
-				.ToListAsync();
-		}
-
+		//Ienum eller List? Man gör redan tolist, blir det mer effektivt?
 		public async Task<IEnumerable<Table>> GetAllTables()
 		{
 			return await _context.Tables.ToListAsync();
@@ -56,6 +49,11 @@ namespace Restaurant_API.Repository
 		{
 			_context.Tables.Update(table);
 			await _context.SaveChangesAsync();
+		}
+
+		public async Task<Table> GetTableById(int id)
+		{
+			return await _context.Tables.FindAsync(id);
 		}
 	}
 }

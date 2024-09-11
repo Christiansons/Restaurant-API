@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Restaurant_API.Data;
 using Restaurant_API.Models;
 using Restaurant_API.Repository.IRepository;
@@ -14,35 +13,38 @@ namespace Restaurant_API.Repository
             _context = context;
         }
 
-        public async Task<Customer> SaveCustomer(Customer customer)
+		public async Task CreateCustomer(Customer customer)
 		{
 			await _context.Customers.AddAsync(customer);
 			await _context.SaveChangesAsync();
-			return customer;
 		}
 
-		public async Task<Customer> CreateCustomer(Customer customer)
+		public async Task<Customer> FindCustomerById(int id)
 		{
-			await _context.Customers.AddAsync(customer);
-			await _context.SaveChangesAsync();
-			return customer;
+			//where or find?
+			return await _context.Customers.Where(c => c.Id == id).FirstOrDefaultAsync();
 		}
 
-		public async Task DeleteTable(Customer customer)
+		public async Task DeleteCustomer(int id)
 		{
-			Customer customerToRemove = await _context.Customers.FindAsync(customer);
+			Customer customerToRemove = await _context.Customers.FindAsync(id);
 
 			if (customerToRemove != null)
 			{
-				_context.Customers.Remove(customer);
+				_context.Customers.Remove(customerToRemove);
 				await _context.SaveChangesAsync();
 			}
 		}
 
-		public async Task UpdateTable(Customer customer)
+		public async Task UpdateCustomer(Customer customer)
 		{
 			_context.Customers.Update(customer);
 			await _context.SaveChangesAsync();
+		}
+
+		public async Task<IEnumerable<Customer>> GetAllCustomers()
+		{
+			return await _context.Customers.ToListAsync();
 		}
 	}
 }

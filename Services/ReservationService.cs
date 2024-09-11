@@ -1,5 +1,5 @@
 ﻿using Azure;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Restaurant_API.Models;
 using Restaurant_API.Models.DTOs;
 using Restaurant_API.Repository.IRepository;
 using Restaurant_API.Services.IServices;
@@ -22,30 +22,46 @@ namespace Restaurant_API.Services
 		public async Task<ReservationResponseDTO> MakeReservation(ReservationDTO reservationDto)
 		{
 			var response = new ReservationResponseDTO();
+			
 
 			if (reservationDto.CustomerName.Length < 2)
 			{
 				response.AddError("Enter a longer name");
 			}
-
 			if (reservationDto.CustomerName.Length > 20)
 			{
 				response.AddError("Enter a shorter name");
 			}
-
 			if (reservationDto.PhoneNr.Length < 10 || reservationDto.PhoneNr.Length > 14)
 			{
 				response.AddError("Invalid phone number, please enter a valid one!");
 			}
 
-			var AvailableTables = _tableRepo.CheckAvailabiltyAndReturnAvailableTables(reservationDto.timeFrom, reservationDto.PartySize);
+			var tables = await _tableRepo.GetAllTables();
 
-			if (AvailableTables == null)
+			var availableTables = tables
+				.Where(t => t.Seats >= reservationDto.PartySize)
+				.Where(t => t.Reservations.Any(r => r.DateTimeFrom < reservationDto.timeFrom && r.DateTimeTo > reservationDto.timeFrom.AddHours(2)))
+				.ToList();
+
+			if (availableTables == null)
 			{
 				response.AddError("No tables available for that time with your party size!");
 			}
 
-			_reservationRepo.SaveReservation();
+			if (!response.SuccessfulReservation)
+			{
+				return response;
+			}
+
+			try
+			{
+				_reservationRepo.SaveReservation(new Reservation
+				{
+					CustomerIdFK
+				});
+			}
+			
 
 		}
 

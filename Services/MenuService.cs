@@ -13,12 +13,9 @@ namespace Restaurant_API.Services
             _menuRepo = menuRepo;
         }
 
-        public async Task<DishDTO> CreateDish(DishDTO dto)
+        public async Task CreateDish(DishDTO dto)
 		{
-			if(dto == null)
-			{
-				return null;
-			}
+			ArgumentNullException.ThrowIfNull(dto);
 
 			try
 			{
@@ -28,7 +25,6 @@ namespace Restaurant_API.Services
 					PriceInSek = dto.PriceInSek,
 					IsAvailable = dto.IsAvailable,
 				});
-				return dto;
 			} catch
 			{
 				return null;
@@ -70,5 +66,7 @@ namespace Restaurant_API.Services
 
 			return dishesDto;
 		}
+
+		
 	}
 }

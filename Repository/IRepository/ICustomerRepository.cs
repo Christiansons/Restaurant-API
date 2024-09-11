@@ -4,6 +4,10 @@ namespace Restaurant_API.Repository.IRepository
 {
 	public interface ICustomerRepository
 	{
-		public Task<Customer> SaveCustomer(Customer customer);
+		public Task CreateCustomer(Customer customer);
+		public Task DeleteCustomer(int id);
+		public Task UpdateCustomer(int id, Customer customer);
+		public Task<Customer> FindCustomerById(int id);
+		Task<IEnumerable<Customer>> GetAllCustomers();
 	}
 }

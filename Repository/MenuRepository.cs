@@ -37,15 +37,10 @@ namespace Restaurant_API.Repository
 			}
 		}
 
-		public async Task UpdateDish(int id, Dish dish)
+		public async Task UpdateDish(Dish dish)
 		{
-			Dish dishToUpdate = await _context.Menu.FindAsync(id);
-
-			if (dishToUpdate != null)
-			{
-				_context.Menu.Update(dish);
-				await _context.SaveChangesAsync();
-			}
+			_context.Menu.Update(dish);
+			await _context.SaveChangesAsync();
 		}
 
 		public async Task<IEnumerable<Dish>> GetAllDishes()

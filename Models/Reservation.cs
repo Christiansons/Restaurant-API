@@ -17,14 +17,14 @@ namespace Restaurant_API.Models
 		[Required]
 		public DateTime DateTimeTo { get; set; }
 
+		[Required]
 		[ForeignKey("Table")]
 		public int TableNumberFK { get; set; }
-		[Required]
 		Table table {  get; set; }
 
+		[Required]
 		[ForeignKey("Customer")]
 		public int CustomerIdFK { get; set; }
-		[Required]
 		Customer customer { get; set; }
 
 		
