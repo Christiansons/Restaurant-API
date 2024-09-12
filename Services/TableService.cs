@@ -7,11 +7,13 @@ namespace Restaurant_API.Services
 {
 	public class TableService : ITableService
 	{
+		//Inject repository
 		private readonly ITableRepository _tableRepo;
         public TableService(ITableRepository tableRepository)
         {
             _tableRepo = tableRepository;
         }
+
 
         public async Task CreateTable(int seats)
 		{
@@ -55,7 +57,8 @@ namespace Restaurant_API.Services
 			};
 		}
 
-		public async Task UpdateTable(TableDTO tableDto)
+		//Kolla med aldor bool?
+		public async Task<bool> UpdateTable(TableDTO tableDto)
 		{
 			await _tableRepo.UpdateTable(new Table { TableNumber = tableDto.TableNr, Seats = tableDto.Seats });
 		}

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant_API.Models.DTOs;
 using Restaurant_API.Services;
+using Restaurant_API.Services.IServices;
 
 namespace Restaurant_API.Controllers
 {
@@ -9,8 +10,8 @@ namespace Restaurant_API.Controllers
 	[ApiController]
 	public class MenuController : ControllerBase
 	{
-		private readonly MenuService _menuService;
-        public MenuController(MenuService menuService)
+		private readonly IMenuService _menuService;
+        public MenuController(IMenuService menuService)
         {
             this._menuService = menuService;
         }
@@ -19,7 +20,7 @@ namespace Restaurant_API.Controllers
 		[Route("")]
 		public async Task<ActionResult<IEnumerable<DishDTO>>> GetMenu()
 		{
-			var dishes = await _menuService.GetAllDishes();
+			var dishes = await _menuService.GetMenu();
 			if(dishes == null)
 			{
 				return NotFound("Inga rätter tillagda");
@@ -52,9 +53,9 @@ namespace Restaurant_API.Controllers
 			}
 		}
 
-		[HttpPost]
-		[Route("update")]
-		public async Task<IActionResult> UpdateDish(int dishId, DishDTO dto)
+		[HttpPut]
+		[Route("update/{dishId}")]
+		public async Task<IActionResult> UpdateDish(int dishId, [FromBody]DishDTO dto)
 		{
 			if(dto == null)
 			{
@@ -73,6 +74,14 @@ namespace Restaurant_API.Controllers
 			{
 				return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
 			}
+		}
+
+		[HttpGet]
+		[Route("dish/{id}")]
+		public async Task<ActionResult<DishDTO>> GetDishById(int id)
+		{
+			var dish = _menuService.GetDishById(id);
+			return Ok(dish);
 		}
 	}
 }

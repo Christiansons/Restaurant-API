@@ -26,6 +26,8 @@ namespace Restaurant_API.Controllers
 			{
 				return BadRequest(response.Errors); 
 			}
+
+			return Ok(response);
 		}
 	}
 }

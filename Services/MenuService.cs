@@ -17,36 +17,28 @@ namespace Restaurant_API.Services
 		{
 			ArgumentNullException.ThrowIfNull(dto);
 
-			try
+			await _menuRepo.CreateDish(new Dish
 			{
-				await _menuRepo.CreateDish(new Dish
-				{
-					DishName = dto.DishName,
-					PriceInSek = dto.PriceInSek,
-					IsAvailable = dto.IsAvailable,
-				});
-			} catch
-			{
-				return null;
-			}
+				DishName = dto.DishName,
+				PriceInSek = dto.PriceInSek,
+				IsAvailable = dto.IsAvailable,
+			});
 		}
 
-		public async Task<DishDTO> UpdateDish(int oldDishId, DishDTO NewDishdto)
+		public async Task UpdateDish(int oldDishId, DishDTO NewDishdto)
 		{
-			try
+			Dish dish = await _menuRepo.FindDishById(oldDishId);
+			if (dish == null)
 			{
-				await _menuRepo.UpdateDish(oldDishId, new Dish
-				{
-					DishName = NewDishdto.DishName,
-					IsAvailable = NewDishdto.IsAvailable,
-					PriceInSek = NewDishdto.PriceInSek
-				});
-				return NewDishdto;
+				return;
 			}
-			catch
+
+			await _menuRepo.UpdateDish(oldDishId, new Dish
 			{
-				return null;
-			}
+				DishName = NewDishdto.DishName,
+				IsAvailable = NewDishdto.IsAvailable,
+				PriceInSek = NewDishdto.PriceInSek
+			});
 		}
 
 		public async Task DeleteDish(int id)
