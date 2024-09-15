@@ -115,6 +115,11 @@ namespace Restaurant_API.Services
 			await _reservationRepo.DeleteReservation(reservation);
 		}
 
+		public async Task UpdateReservation(ReservationDTO reservation)
+		{
+
+		}
+
 		//Check if table available, if not return Choose another table!
 
 		//Save customer and table to reservation
