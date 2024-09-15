@@ -19,15 +19,22 @@ namespace Restaurant_API.Controllers
         [HttpPost]
 		[Route("reservation")]
 		//Skickar och tar emot DTO för att kunna visa upp bokningen när den är gjord
-		public async Task<IActionResult> Reservation(ReservationDTO dto)
+		public async Task<IActionResult> Reservation([FromBody]ReservationDTO dto)
 		{
-			ReservationResponseDTO response = await _reservationService.MakeReservation(dto);
+			ReservationResponseDTO response = await _reservationService.CreateReservation(dto);
 			if (!response.SuccessfulReservation)
 			{
 				return BadRequest(response.Errors); 
 			}
 
 			return Ok(response);
+		}
+
+		[HttpGet]
+		[Route("reservation/{reservationNumber}")]
+		public async Task<ActionResult<ReservationDTO>> GetReservationById(int reservationNumber)
+		{
+			var reservation = await _reservationService.GetReservationById(reservationNumber);
 		}
 	}
 }

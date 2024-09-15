@@ -14,7 +14,7 @@ namespace Restaurant_API.Repository
             _context = context;
         }
 
-		public async Task<Dish> FindDishById(int id)
+		public async Task<Dish> GetDishById(int id)
 		{
 			return await _context.Menu.FindAsync(id);
 		}

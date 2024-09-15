@@ -19,7 +19,7 @@ namespace Restaurant_API.Repository
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task<Customer> FindCustomerById(int id)
+		public async Task<Customer> GetCustomerById(int id)
 		{
 			//where or find?
 			return await _context.Customers.Where(c => c.Id == id).FirstOrDefaultAsync();

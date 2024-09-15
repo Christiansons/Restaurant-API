@@ -20,12 +20,12 @@ namespace Restaurant_API.Models
 		[Required]
 		[ForeignKey("Table")]
 		public int TableNumberFK { get; set; }
-		Table table {  get; set; }
+		public Table Table {  get; set; }
 
 		[Required]
 		[ForeignKey("Customer")]
 		public int CustomerIdFK { get; set; }
-		Customer customer { get; set; }
+		public Customer Customer { get; set; }
 
 		
 	}

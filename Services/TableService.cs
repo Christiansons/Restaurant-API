@@ -19,11 +19,11 @@ namespace Restaurant_API.Services
 		{
 			try
 			{
-				await _tableRepo.SaveTable(new Table
+				await _tableRepo.CreateTable(new Table
 				{
 					Seats = seats
 				});
-			} catch (Exception ex)
+			} catch (Exception)
 			{
 				return;
 			}
@@ -32,8 +32,19 @@ namespace Restaurant_API.Services
 
 		public async Task DeleteTable(int id)
 		{
+			if(id < 0)
+			{
+				throw new Exception();
+			}
+
 			Table table = await _tableRepo.GetTableById(id);
-			await _tableRepo.RemoveTable(table);
+
+			if(table == null)
+			{
+				throw new NullReferenceException();
+			}
+
+			await _tableRepo.DeleteTable(table);
 		}
 
 		public async Task<IEnumerable<TableDTO>> GetAllTables()
@@ -49,18 +60,32 @@ namespace Restaurant_API.Services
 
 		public async Task<TableDTO> GetTableByTableNr(int id)
 		{
-			var table = await _tableRepo.GetTableById(id);
-			return new TableDTO
+			try
 			{
-				Seats = table.Seats,
-				TableNr = table.TableNumber
-			};
+				var table = await _tableRepo.GetTableById(id);
+				return new TableDTO
+				{
+					Seats = table.Seats,
+					TableNr = table.TableNumber
+				};
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 
 		//Kolla med aldor bool?
 		public async Task<bool> UpdateTable(TableDTO tableDto)
 		{
-			await _tableRepo.UpdateTable(new Table { TableNumber = tableDto.TableNr, Seats = tableDto.Seats });
+			try
+			{
+				await _tableRepo.UpdateTable(new Table { TableNumber = tableDto.TableNr, Seats = tableDto.Seats });
+				return true;
+			} catch (Exception)
+			{
+				return false;
+			}
 		}
 	}
 }

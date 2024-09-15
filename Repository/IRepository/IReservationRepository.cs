@@ -4,9 +4,10 @@ namespace Restaurant_API.Repository.IRepository
 {
 	public interface IReservationRepository
 	{
-		public Task<Reservation> SaveReservation(Reservation reservation);
-		public Task<Table> CreateTable(Table table);
-		public Task DeleteTable(Table table);
-		public Task UpdateTable(Table table);
+		public Task<Reservation> CreateReservation(Reservation reservation);
+		public Task DeleteReservation(Reservation reservation);
+		public Task UpdateReservation(Reservation reservation);
+		public Task<Reservation> GetReservationById(int id);
+		public Task<IEnumerable<Reservation>> GetAllReservations();
 	}
 }

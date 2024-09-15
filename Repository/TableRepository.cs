@@ -27,20 +27,17 @@ namespace Restaurant_API.Repository
 			return await _context.Tables.ToListAsync();
 		}
 
-		public async Task<Table> CreateTable(Table table)
+		public async Task CreateTable(Table table)
 		{
 			await _context.Tables.AddAsync(table);
 			await _context.SaveChangesAsync();
-			return table;
 		}
 
 		public async Task DeleteTable(Table table)
 		{
-			Table tableToRemove = await _context.Tables.FindAsync(table);
-
-			if (tableToRemove != null)
+			if (table != null)
 			{
-				_context.Tables.Remove(tableToRemove);
+				_context.Tables.Remove(table);
 				await _context.SaveChangesAsync();
 			}
 		}

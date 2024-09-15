@@ -1,4 +1,5 @@
-﻿using Restaurant_API.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Restaurant_API.Data;
 using Restaurant_API.Models;
 using Restaurant_API.Repository.IRepository;
 
@@ -12,35 +13,35 @@ namespace Restaurant_API.Repository
             _context = context;
         }
 
-        public async Task<Reservation> SaveReservation(Reservation reservation)
+        public async Task<Reservation> CreateReservation(Reservation reservation)
 		{
 			await _context.Reservations.AddAsync(reservation);
 			await _context.SaveChangesAsync();
 			return reservation;
 		}
 
-		public async Task<Table> CreateTable(Table table)
+		public async Task DeleteReservation(Reservation reservation)
 		{
-			await _context.Tables.AddAsync(table);
-			await _context.SaveChangesAsync();
-			return table;
-		}
-
-		public async Task DeleteTable(Table table)
-		{
-			Table tableToRemove = await _context.Tables.FindAsync(table);
-
-			if (tableToRemove != null)
+			if(reservation != null)
 			{
-				_context.Tables.Remove(tableToRemove);
+				_context.Reservations.Remove(reservation);
 				await _context.SaveChangesAsync();
 			}
 		}
 
-		public async Task UpdateTable(Table table)
+		public async Task<IEnumerable<Reservation>> GetAllReservations()
 		{
-			_context.Tables.Update(table);
-			await _context.SaveChangesAsync();
+			return await _context.Reservations.ToListAsync();
+		}
+
+		public async Task<Reservation> GetReservationById(int id)
+		{
+			return await _context.Reservations.Where(r => r.ReservationNumber == id).Include(r => r.Customer).Include(r=> r.Table).FirstOrDefaultAsync();
+		}
+
+		public Task UpdateReservation(Reservation reservation)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -20,19 +20,28 @@ namespace Restaurant_API.Controllers
 		[Route("")]
 		public async Task<ActionResult<IEnumerable<DishDTO>>> GetMenu()
 		{
+			//Denna eller table getAll?
 			var dishes = await _menuService.GetMenu();
 			if(dishes == null)
 			{
 				return NotFound("Inga rätter tillagda");
 			}
-
 			return Ok(dishes);
 		}
 
-		[HttpPost]
-		[Route("add")]
-		public async Task<IActionResult> AddDish(DishDTO dish)
+		[HttpDelete]
+		[Route("delete/{id}")]
+		public async Task<IActionResult> DeleteDish(int id)
 		{
+			await _menuService.DeleteDish(id);
+			return Ok("Dish deleted");
+		}
+
+		[HttpPost]
+		[Route("create")]
+		public async Task<IActionResult> CreateDish(DishDTO dish)
+		{
+			//testa allt här eller som på reservation?
 			if(dish == null)
 			{
 				return BadRequest("Dish data cannot be empty.");
@@ -80,7 +89,11 @@ namespace Restaurant_API.Controllers
 		[Route("dish/{id}")]
 		public async Task<ActionResult<DishDTO>> GetDishById(int id)
 		{
-			var dish = _menuService.GetDishById(id);
+			var dish = await _menuService.GetDishById(id);
+			if(dish == null)
+			{
+				return NotFound();
+			}
 			return Ok(dish);
 		}
 	}

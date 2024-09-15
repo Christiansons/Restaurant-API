@@ -20,9 +20,9 @@ namespace Restaurant_API.Controllers
 		[Route("addTable/{seats}")] //När det är en sak som ska in, ändå från body? Känns logiskt tvärtom dock
 		public async Task<IActionResult> CreateTable(int seats)
 		{
-			if (seats == null)
+			if (seats < 1)
 			{
-				return BadRequest("Must add table data");
+				return BadRequest("Cant be empty table");
 			}
 
 			await _tableService.CreateTable(seats);
@@ -42,14 +42,14 @@ namespace Restaurant_API.Controllers
 		public async Task<ActionResult<TableDTO>> GetTableById(int id)
 		{
 			var table = await _tableService.GetTableByTableNr(id);
-			return Ok(new TableDTO { Seats = table.Seats, TableNr = table.TableNr});
+			return Ok(table);
 		}
 
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<TableDTO>>> GetAllTables()
 		{
 			var tables = await _tableService.GetAllTables();
-			var tablesDto = tables.Select(t => new TableDTO { Seats = t.Seats, TableNr = t.TableNr });
+			var tablesDto = tables.Select(t => new TableDTO { Seats = t.Seats, TableNr = t.TableNr }).ToList();
 
 			return Ok(tablesDto);
 		}

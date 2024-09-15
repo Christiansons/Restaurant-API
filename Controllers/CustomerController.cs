@@ -39,8 +39,20 @@ namespace Restaurant_API.Controllers
 		[Route("create")]
 		public async Task<IActionResult> CreateCustomer(CustomerDTO dto)
 		{
+			if(dto == null)
+			{
+				return BadRequest("Cant be empty");
+			}
 			await _customerService.CreateCustomer(dto);
 			return Ok(dto);
+		}
+
+		[HttpDelete]
+		[Route("delete")]
+		public async Task<IActionResult> DeleteCustomer(int id)
+		{
+			await _customerService.DeleteCustomer(id);
+			return Ok();
 		}
 
 		[HttpGet]
@@ -51,11 +63,12 @@ namespace Restaurant_API.Controllers
 			return Ok(customer);
 		}
 
-		[HttpPatch]
+		[HttpPut]
 		[Route("Customer")]
 		public async Task<IActionResult> UpdateCustomer(int id, CustomerDTO dto)
 		{
-			_customerService.UpdateCustomer()
+			await _customerService.UpdateCustomer(id, dto);
+			return Ok("Updated");
 		}
     }
 }

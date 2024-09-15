@@ -8,12 +8,19 @@ namespace Restaurant_API.Services
 	public class CustomerService : ICustomerService
 	{
 		private readonly ICustomerRepository _customerRepo;
-        public CustomerService(ICustomerRepository customerRepo)
-        {
-            _customerRepo = customerRepo;
-        }
-        public async Task CreateCustomer(CustomerDTO customerDTO)
+		public CustomerService(ICustomerRepository customerRepo)
 		{
+			_customerRepo = customerRepo;
+		}
+
+
+		public async Task CreateCustomer(CustomerDTO customerDTO)
+		{
+			if (customerDTO == null)
+			{
+				return;
+			}
+
 			await _customerRepo.CreateCustomer(new Customer
 			{
 				Name = customerDTO.Name,
@@ -32,86 +39,40 @@ namespace Restaurant_API.Services
 			return customers.Select(c => new CustomerDTO
 			{
 				Name = c.Name,
-				PhoneNr = c.PhoneNr,
+				PhoneNr = c.Phone,
+			});
+		}
+
+		public async Task<CustomerDTO> GetCustomerById(int id)
+		{
+			Customer customer = await _customerRepo.GetCustomerById(id);
+
+			if(customer == null)
+			{
+				throw new Exception();
 			}
+
+			return new CustomerDTO
+			{
+				Name = customer.Name,
+				PhoneNr = customer.Phone
+			};
 		}
 
-		public Task<CustomerDTO> GetCustomerById(int id)
+		public async Task UpdateCustomer(int id, CustomerDTO customerDTO)
 		{
-			throw new NotImplementedException();
-		}
+			var customer = await _customerRepo.GetCustomerById(id);
 
-		public Task UpdateCustomer(CustomerDTO customerDTO)
-		{
+			customer.Name = customerDTO.Name;
+			customer.Phone = customerDTO.PhoneNr;
 			try
 			{
-				await _customerRepo.upd(oldDishId, new Dish
-				{
-					DishName = NewDishdto.DishName,
-					IsAvailable = NewDishdto.IsAvailable,
-					PriceInSek = NewDishdto.PriceInSek
-				});
-				return NewDishdto;
+				await _customerRepo.UpdateCustomer(customer);
 			}
-			catch
+			catch (Exception ex)
 			{
-				return null;
+
 			}
-		}
-
-		public async Task CreateDish(DishDTO dto)
-		{
-			ArgumentNullException.ThrowIfNull(dto);
-
-			try
-			{
-				await _menuRepo.CreateDish(new Dish
-				{
-					DishName = dto.DishName,
-					PriceInSek = dto.PriceInSek,
-					IsAvailable = dto.IsAvailable,
-				});
-			}
-			catch
-			{
-				return null;
-			}
-		}
-
-		public async Task<DishDTO> UpdateDish(int oldDishId, DishDTO NewDishdto)
-		{
-			try
-			{
-				await _menuRepo.UpdateDish(oldDishId, new Dish
-				{
-					DishName = NewDishdto.DishName,
-					IsAvailable = NewDishdto.IsAvailable,
-					PriceInSek = NewDishdto.PriceInSek
-				});
-				return NewDishdto;
-			}
-			catch
-			{
-				return null;
-			}
-		}
-
-		public async Task DeleteDish(int id)
-		{
-			await _menuRepo.DeleteDish(id); //Try catch in controller
-		}
-
-		public async Task<IEnumerable<DishDTO>> GetAllDishes()
-		{
-			var dishes = await _menuRepo.GetAllDishes();
-			var dishesDto = dishes.Select(d => new DishDTO
-			{
-				DishName = d.DishName,
-				IsAvailable = d.IsAvailable,
-				PriceInSek = d.PriceInSek
-			}).ToList();
-
-			return dishesDto;
 		}
 	}
 }

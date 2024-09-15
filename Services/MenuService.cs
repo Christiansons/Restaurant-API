@@ -27,26 +27,26 @@ namespace Restaurant_API.Services
 
 		public async Task UpdateDish(int oldDishId, DishDTO NewDishdto)
 		{
-			Dish dish = await _menuRepo.FindDishById(oldDishId);
+			Dish dish = await _menuRepo.GetDishById(oldDishId);
 			if (dish == null)
 			{
 				return;
 			}
 
-			await _menuRepo.UpdateDish(oldDishId, new Dish
-			{
-				DishName = NewDishdto.DishName,
-				IsAvailable = NewDishdto.IsAvailable,
-				PriceInSek = NewDishdto.PriceInSek
-			});
+			//Rätt? Testa
+			dish.DishName = NewDishdto.DishName;
+			dish.PriceInSek = NewDishdto.PriceInSek;
+			dish.IsAvailable = NewDishdto.IsAvailable;
+
+			await _menuRepo.UpdateDish(dish);
 		}
 
 		public async Task DeleteDish(int id)
 		{
-			await _menuRepo.DeleteDish(id); //Try catch in controller
+			await _menuRepo.DeleteDish(id); //Try catch in controller ?
 		}
 
-		public async Task<IEnumerable<DishDTO>> GetAllDishes()
+		public async Task<IEnumerable<DishDTO>> GetMenu()
 		{
 			var dishes = await _menuRepo.GetAllDishes();
 			var dishesDto =  dishes.Select(d => new DishDTO
@@ -59,6 +59,19 @@ namespace Restaurant_API.Services
 			return dishesDto;
 		}
 
-		
+		public async Task<DishDTO> GetDishById(int id)
+		{
+			var dish = await _menuRepo.GetDishById(id);
+			if (dish == null)
+			{
+				return null;
+			}
+			return new DishDTO
+			{
+				DishName = dish.DishName,
+				IsAvailable = dish.IsAvailable,
+				PriceInSek = dish.PriceInSek
+			};
+		}
 	}
 }

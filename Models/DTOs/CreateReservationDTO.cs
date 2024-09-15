@@ -1,8 +1,7 @@
 ﻿namespace Restaurant_API.Models.DTOs
 {
-	public class ReservationDTO
+	public class CreateReservationDTO
 	{
-		public int ReservationNumber { get; set; }
 		public int PartySize { get; set; }
 		public string CustomerName { get; set; }
 		public string PhoneNr { get; set; }

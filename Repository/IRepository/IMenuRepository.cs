@@ -8,7 +8,7 @@ namespace Restaurant_API.Repository.IRepository
 		public Task<Dish> CreateDish(Dish dish);
 		public Task DeleteDish(int id);
 		public Task UpdateDish(Dish dish);
-		public Task<Dish> FindDishById(int id);
-		Task<IEnumerable<Dish>> GetAllDishes();
+		public Task<Dish> GetDishById(int id);
+		public Task<IEnumerable<Dish>> GetAllDishes();
 	}
 }
