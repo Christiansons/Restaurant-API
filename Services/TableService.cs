@@ -76,11 +76,13 @@ namespace Restaurant_API.Services
 		}
 
 		//Kolla med aldor bool?
-		public async Task<bool> UpdateTable(TableDTO tableDto)
+		public async Task<bool> UpdateTable(int tableId, int seats)
 		{
 			try
 			{
-				await _tableRepo.UpdateTable(new Table { TableNumber = tableDto.TableNr, Seats = tableDto.Seats });
+				var table = await _tableRepo.GetTableById(tableId);
+				table.Seats = seats;
+				await _tableRepo.UpdateTable(table);
 				return true;
 			} catch (Exception)
 			{

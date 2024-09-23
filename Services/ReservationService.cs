@@ -19,32 +19,25 @@ namespace Restaurant_API.Services
 			_customerRepo = custRepo;
         }
 
-		public async Task<ReservationResponseDTO> CreateReservation(ReservationDTO reservationDto)
+		public async Task<ReservationResponseDTO> CreateReservation(CreateReservationDTO reservationDto)
 		{
 			var response = new ReservationResponseDTO();
 			
+			var customer = _customerRepo.GetCustomerById(reservationDto.customerId);
 
-			if (reservationDto.CustomerName.Length < 2)
+			if(customer == null)
 			{
-				response.AddError("Enter a longer name");
-			}
-			if (reservationDto.CustomerName.Length > 20)
-			{
-				response.AddError("Enter a shorter name");
-			}
-			if (reservationDto.PhoneNr.Length < 10 || reservationDto.PhoneNr.Length > 14)
-			{
-				response.AddError("Invalid phone number, please enter a valid one!");
+				response.AddError("User not found");
 			}
 
 			var tables = await _tableRepo.GetAllTables();
 
-			var availableTables = tables
+			var availableTable = tables
 				.Where(t => t.Seats >= reservationDto.PartySize)
 				.Where(t => t.Reservations.Any(r => r.DateTimeFrom < reservationDto.timeFrom && r.DateTimeTo > reservationDto.timeFrom.AddHours(2)))
-				.ToList();
+				.FirstOrDefault();
 
-			if (availableTables == null)
+			if (availableTable == null)
 			{
 				response.AddError("No tables available for that time with your party size!");
 			}
@@ -54,53 +47,54 @@ namespace Restaurant_API.Services
 				return response;
 			}
 
-			try
+			await _reservationRepo.CreateReservation(new Reservation
 			{
-				_reservationRepo.CreateReservation(new Reservation
-				{
-					CustomerIdFK = 
-				});
-			}
-			
-
+				CustomerIdFK = reservationDto.customerId,
+				TableNumberFK = reservationDto.TableNr,
+				DateTimeFrom = reservationDto.timeFrom,
+				DateTimeTo = reservationDto.timeFrom.AddHours(2),
+				PartySize = reservationDto.PartySize
+			});
+			return response;
 		}
 
-		public async Task<ReservationDTO> GetReservationById(int id)
+
+		public async Task<GetReservationDTO> GetReservationById(int id)
 		{
 			var res = await _reservationRepo.GetReservationById(id);
 			if (res == null)
 			{
 				return null;
 			}
-			return new ReservationDTO
+			return new GetReservationDTO
 			{
 				ReservationNumber = res.ReservationNumber,
 				CustomerName = res.Customer.Name,
 				PartySize = res.PartySize,
-				PhoneNr = res.Customer.Phone,
+				phoneNr = res.Customer.Phone,
 				TableNr = res.TableNumberFK,
 				timeFrom = res.DateTimeFrom,
 				timeTo = res.DateTimeTo,
 			};
 		}
 
-		public async Task<IEnumerable<ReservationDTO>> GetAllReservations()
+		public async Task<IEnumerable<GetReservationDTO>> GetAllReservations()
 		{
 			var reservations = await _reservationRepo.GetAllReservations();
 			if(reservations == null)
 			{
 				return null;
-			}	
+			}
 
-			return reservations.Select(r => new ReservationDTO
+			return reservations.Select(r => new GetReservationDTO
 			{
 				CustomerName = r.Customer.Name,
+				phoneNr = r.Customer.Phone,
+				ReservationNumber = r.ReservationNumber,
 				PartySize = r.PartySize,
-				PhoneNr = r.Customer.Phone,
 				TableNr = r.TableNumberFK,
-				ReservationNumber=r.ReservationNumber,
-				timeFrom=r.DateTimeFrom,
-				timeTo=r.DateTimeTo,
+				timeFrom = r.DateTimeFrom,
+				timeTo = r.DateTimeTo,
 			}).ToList();
 		}
 
@@ -115,9 +109,16 @@ namespace Restaurant_API.Services
 			await _reservationRepo.DeleteReservation(reservation);
 		}
 
-		public async Task UpdateReservation(ReservationDTO reservation)
+		public async Task UpdateReservation(int reservationNumber, CreateReservationDTO updatedReservation)
 		{
+			var reservation = await _reservationRepo.GetReservationById(reservationNumber);
+			reservation.TableNumberFK = updatedReservation.TableNr;
+			reservation.CustomerIdFK = updatedReservation.customerId;
+			reservation.PartySize = updatedReservation.PartySize;
+			reservation.DateTimeFrom = updatedReservation.timeFrom;
+			reservation.DateTimeTo = updatedReservation.timeFrom.AddHours(2);
 
+			await _reservationRepo.UpdateReservation(reservation);
 		}
 
 		//Check if table available, if not return Choose another table!

@@ -4,6 +4,6 @@
 	{
         public string Name { get; set; }
         public string PhoneNr { get; set; }
-        public IEnumerable<ReservationDTO>? reservationDTOs { get; set; }
+        public IEnumerable<CreateReservationDTO>? reservationDTOs { get; set; }
     }
 }

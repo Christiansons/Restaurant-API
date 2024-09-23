@@ -11,18 +11,17 @@ namespace Restaurant_API.Controllers
 	public class MenuController : ControllerBase
 	{
 		private readonly IMenuService _menuService;
-        public MenuController(IMenuService menuService)
-        {
-            this._menuService = menuService;
-        }
+		public MenuController(IMenuService menuService)
+		{
+			this._menuService = menuService;
+		}
 
-        [HttpGet]
-		[Route("")]
+		[HttpGet]
 		public async Task<ActionResult<IEnumerable<DishDTO>>> GetMenu()
 		{
 			//Denna eller table getAll?
 			var dishes = await _menuService.GetMenu();
-			if(dishes == null)
+			if (dishes == null)
 			{
 				return NotFound("Inga rätter tillagda");
 			}
@@ -30,19 +29,18 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpDelete]
-		[Route("delete/{id}")]
-		public async Task<IActionResult> DeleteDish(int id)
+		[Route("/{dishId}")]
+		public async Task<IActionResult> DeleteDish(int dishId)
 		{
-			await _menuService.DeleteDish(id);
+			await _menuService.DeleteDish(dishId);
 			return Ok("Dish deleted");
 		}
 
 		[HttpPost]
-		[Route("create")]
-		public async Task<IActionResult> CreateDish(DishDTO dish)
+		public async Task<IActionResult> CreateDish([FromBody] DishDTO dish)
 		{
 			//testa allt här eller som på reservation?
-			if(dish == null)
+			if (dish == null)
 			{
 				return BadRequest("Dish data cannot be empty.");
 			}
@@ -52,7 +50,7 @@ namespace Restaurant_API.Controllers
 				await _menuService.CreateDish(dish);
 				return Ok("Dish created");
 			}
-			catch(ArgumentNullException ex)
+			catch (ArgumentNullException ex)
 			{
 				return BadRequest("Error creating dish");
 			}
@@ -63,10 +61,10 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPut]
-		[Route("update/{dishId}")]
-		public async Task<IActionResult> UpdateDish(int dishId, [FromBody]DishDTO dto)
+		[Route("/{dishId}")]
+		public async Task<IActionResult> UpdateDish(int dishId, [FromBody] DishDTO dto)
 		{
-			if(dto == null)
+			if (dto == null)
 			{
 				return BadRequest("Dish data cannot be empty");
 			}
@@ -85,11 +83,10 @@ namespace Restaurant_API.Controllers
 			}
 		}
 
-		[HttpGet]
-		[Route("dish/{id}")]
-		public async Task<ActionResult<DishDTO>> GetDishById(int id)
+		[HttpGet("/{dishId}")]
+		public async Task<ActionResult<DishDTO>> GetDishById(int dishId)
 		{
-			var dish = await _menuService.GetDishById(id);
+			var dish = await _menuService.GetDishById(dishId);
 			if(dish == null)
 			{
 				return NotFound();

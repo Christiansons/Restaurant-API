@@ -4,7 +4,7 @@
 	{
 		public bool SuccessfulReservation = true;
 		public List<string> Errors;
-		public ReservationDTO reservationDto;
+		public CreateReservationDTO reservationDto;
 
         public ReservationResponseDTO()
         {
