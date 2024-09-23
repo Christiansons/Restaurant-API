@@ -17,8 +17,8 @@ namespace Restaurant_API.Controllers
         }
 
         [HttpPost]
-		//Skickar och tar emot DTO för att kunna visa upp bokningen när den är gjord
-		public async Task<IActionResult> Reservation([FromBody]ReservationDTO dto)
+		//create reservation
+		public async Task<IActionResult> CreateReservation([FromBody]CreateReservationDTO dto)
 		{
 			ReservationResponseDTO response = await _reservationService.CreateReservation(dto);
 			if (!response.SuccessfulReservation)
@@ -29,24 +29,29 @@ namespace Restaurant_API.Controllers
 			return Ok(response);
 		}
 
+		//Get resrevation by id
 		[HttpGet]
 		[Route("/{reservationNumber}")]
-		public async Task<ActionResult<ReservationDTO>> GetReservationById(int reservationNumber)
+		public async Task<ActionResult<CreateReservationDTO>> GetReservationById(int reservationNumber)
 		{
 			var reservation = await _reservationService.GetReservationById(reservationNumber);
+			return Ok(reservation);
 		}
 
+		//Delete reservation
 		[HttpDelete]
 		[Route("/{reservationNumber}")]
 		public async Task <IActionResult> DeleteReservation(int reservationNumber)
 		{
-
+			await _reservationService.DeleteReservation(reservationNumber);
+			return Ok();
 		}
 
 		[HttpGet]
-		public async Task <ActionResult<IEnumerable<ReservationDTO>>> GetAllReservations()
+		public async Task <ActionResult<IEnumerable<CreateReservationDTO>>> GetAllReservations()
 		{
-
+			var reservations = await _reservationService.GetAllReservations();
+			return Ok(reservations);
 		}
 	}
 }
