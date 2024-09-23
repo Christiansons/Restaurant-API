@@ -2,7 +2,6 @@
 {
 	public class CreateReservationDTO
 	{
-		public int ReservationNumber { get; set; }
 		public int PartySize { get; set; }
 		public int TableNr { get; set; }
 		public int customerId { get; set; }
