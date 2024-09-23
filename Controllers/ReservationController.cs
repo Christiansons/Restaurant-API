@@ -55,7 +55,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPatch]
-		[Route("/update/{reservationNumber}")]
+		[Route("/{reservationNumber}")]
 		public async Task<IActionResult> UpdateReservation(int reservationNumber, [FromBody]CreateReservationDTO updatedReservation)
 		{
 			await _reservationService.UpdateReservation(reservationNumber, updatedReservation);
