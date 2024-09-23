@@ -41,17 +41,25 @@ namespace Restaurant_API.Controllers
 		//Delete reservation
 		[HttpDelete]
 		[Route("/{reservationNumber}")]
-		public async Task <IActionResult> DeleteReservation(int reservationNumber)
+		public async Task<IActionResult> DeleteReservation(int reservationNumber)
 		{
 			await _reservationService.DeleteReservation(reservationNumber);
 			return Ok();
 		}
 
 		[HttpGet]
-		public async Task <ActionResult<IEnumerable<CreateReservationDTO>>> GetAllReservations()
+		public async Task<ActionResult<IEnumerable<CreateReservationDTO>>> GetAllReservations()
 		{
 			var reservations = await _reservationService.GetAllReservations();
 			return Ok(reservations);
+		}
+
+		[HttpPatch]
+		[Route("/update/{reservationNumber}")]
+		public async Task<IActionResult> UpdateReservation(int reservationNumber, [FromBody]CreateReservationDTO updatedReservation)
+		{
+			await _reservationService.UpdateReservation(reservationNumber, updatedReservation);
+			return Ok("Updated");
 		}
 	}
 }
