@@ -39,9 +39,10 @@ namespace Restaurant_API.Repository
 			return await _context.Reservations.Where(r => r.ReservationNumber == id).Include(r => r.Customer).Include(r=> r.Table).FirstOrDefaultAsync();
 		}
 
-		public Task UpdateReservation(Reservation reservation)
+		public async Task UpdateReservation(Reservation reservation)
 		{
-			throw new NotImplementedException();
+			_context.Reservations.Update(reservation);
+			await _context.SaveChangesAsync();
 		}
 	}
 }
