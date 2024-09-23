@@ -19,7 +19,7 @@ namespace Restaurant_API.Services
 			_customerRepo = custRepo;
         }
 
-		public async Task<ReservationResponseDTO> CreateReservation(ReservationDTO reservationDto)
+		public async Task<ReservationResponseDTO> CreateReservation(CreateReservationDTO reservationDto)
 		{
 			var response = new ReservationResponseDTO();
 			
@@ -58,14 +58,14 @@ namespace Restaurant_API.Services
 			return response;
 		}
 
-		public async Task<ReservationDTO> GetReservationById(int id)
+		public async Task<CreateReservationDTO> GetReservationById(int id)
 		{
 			var res = await _reservationRepo.GetReservationById(id);
 			if (res == null)
 			{
 				return null;
 			}
-			return new ReservationDTO
+			return new CreateReservationDTO
 			{
 				ReservationNumber = res.ReservationNumber,
 				CustomerName = res.Customer.Name,
@@ -77,23 +77,21 @@ namespace Restaurant_API.Services
 			};
 		}
 
-		public async Task<IEnumerable<ReservationDTO>> GetAllReservations()
+		public async Task<IEnumerable<CreateReservationDTO>> GetAllReservations()
 		{
 			var reservations = await _reservationRepo.GetAllReservations();
 			if(reservations == null)
 			{
 				return null;
-			}	
+			}
 
-			return reservations.Select(r => new ReservationDTO
+			return reservations.Select(r => new CreateReservationDTO
 			{
-				CustomerName = r.Customer.Name,
+				Customer = r.Customer,
+				ReservationNumber = r.ReservationNumber,
 				PartySize = r.PartySize,
-				PhoneNr = r.Customer.Phone,
 				TableNr = r.TableNumberFK,
-				ReservationNumber=r.ReservationNumber,
-				timeFrom=r.DateTimeFrom,
-				timeTo=r.DateTimeTo,
+				timeFrom = r.DateTimeFrom,
 			}).ToList();
 		}
 
@@ -108,7 +106,7 @@ namespace Restaurant_API.Services
 			await _reservationRepo.DeleteReservation(reservation);
 		}
 
-		public async Task UpdateReservation(ReservationDTO reservation)
+		public async Task UpdateReservation(CreateReservationDTO reservation)
 		{
 
 		}
