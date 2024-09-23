@@ -58,26 +58,27 @@ namespace Restaurant_API.Services
 			return response;
 		}
 
-		public async Task<CreateReservationDTO> GetReservationById(int id)
+
+		public async Task<GetReservationDTO> GetReservationById(int id)
 		{
 			var res = await _reservationRepo.GetReservationById(id);
 			if (res == null)
 			{
 				return null;
 			}
-			return new CreateReservationDTO
+			return new GetReservationDTO
 			{
 				ReservationNumber = res.ReservationNumber,
 				CustomerName = res.Customer.Name,
 				PartySize = res.PartySize,
-				PhoneNr = res.Customer.Phone,
+				phoneNr = res.Customer.Phone,
 				TableNr = res.TableNumberFK,
 				timeFrom = res.DateTimeFrom,
 				timeTo = res.DateTimeTo,
 			};
 		}
 
-		public async Task<IEnumerable<CreateReservationDTO>> GetAllReservations()
+		public async Task<IEnumerable<GetReservationDTO>> GetAllReservations()
 		{
 			var reservations = await _reservationRepo.GetAllReservations();
 			if(reservations == null)
@@ -85,13 +86,15 @@ namespace Restaurant_API.Services
 				return null;
 			}
 
-			return reservations.Select(r => new CreateReservationDTO
+			return reservations.Select(r => new GetReservationDTO
 			{
-				Customer = r.Customer,
+				CustomerName = r.Customer.Name,
+				phoneNr = r.Customer.Phone,
 				ReservationNumber = r.ReservationNumber,
 				PartySize = r.PartySize,
 				TableNr = r.TableNumberFK,
 				timeFrom = r.DateTimeFrom,
+				timeTo = r.DateTimeTo,
 			}).ToList();
 		}
 
@@ -106,9 +109,16 @@ namespace Restaurant_API.Services
 			await _reservationRepo.DeleteReservation(reservation);
 		}
 
-		public async Task UpdateReservation(CreateReservationDTO reservation)
+		public async Task UpdateReservation(int reservationNumber, CreateReservationDTO updatedReservation)
 		{
+			var reservation = await _reservationRepo.GetReservationById(reservationNumber);
+			reservation.TableNumberFK = updatedReservation.TableNr;
+			reservation.CustomerIdFK = updatedReservation.customerId;
+			reservation.PartySize = updatedReservation.PartySize;
+			reservation.DateTimeFrom = updatedReservation.timeFrom;
+			reservation.DateTimeTo = updatedReservation.timeFrom.AddHours(2);
 
+			await _reservationRepo.UpdateReservation(reservation);
 		}
 
 		//Check if table available, if not return Choose another table!
