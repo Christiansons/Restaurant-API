@@ -31,7 +31,7 @@ namespace Restaurant_API.Repository
 
 		public async Task<IEnumerable<Reservation>> GetAllReservations()
 		{
-			return await _context.Reservations.ToListAsync();
+			return await _context.Reservations.Include(r => r.Customer).ToListAsync();
 		}
 
 		public async Task<Reservation> GetReservationById(int id)
