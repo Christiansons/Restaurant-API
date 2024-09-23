@@ -23,28 +23,21 @@ namespace Restaurant_API.Services
 		{
 			var response = new ReservationResponseDTO();
 			
+			var customer = _customerRepo.GetCustomerById(reservationDto.customerId);
 
-			if (reservationDto.CustomerName.Length < 2)
+			if(customer == null)
 			{
-				response.AddError("Enter a longer name");
-			}
-			if (reservationDto.CustomerName.Length > 20)
-			{
-				response.AddError("Enter a shorter name");
-			}
-			if (reservationDto.PhoneNr.Length < 10 || reservationDto.PhoneNr.Length > 14)
-			{
-				response.AddError("Invalid phone number, please enter a valid one!");
+				response.AddError("User not found");
 			}
 
 			var tables = await _tableRepo.GetAllTables();
 
-			var availableTables = tables
+			var availableTable = tables
 				.Where(t => t.Seats >= reservationDto.PartySize)
 				.Where(t => t.Reservations.Any(r => r.DateTimeFrom < reservationDto.timeFrom && r.DateTimeTo > reservationDto.timeFrom.AddHours(2)))
-				.ToList();
+				.FirstOrDefault();
 
-			if (availableTables == null)
+			if (availableTable == null)
 			{
 				response.AddError("No tables available for that time with your party size!");
 			}
@@ -54,15 +47,15 @@ namespace Restaurant_API.Services
 				return response;
 			}
 
-			try
+			await _reservationRepo.CreateReservation(new Reservation
 			{
-				_reservationRepo.CreateReservation(new Reservation
-				{
-					CustomerIdFK = 
-				});
-			}
-			
-
+				CustomerIdFK = reservationDto.customerId,
+				TableNumberFK = reservationDto.TableNr,
+				DateTimeFrom = reservationDto.timeFrom,
+				DateTimeTo = reservationDto.timeFrom.AddHours(2),
+				PartySize = reservationDto.PartySize
+			});
+			return response;
 		}
 
 		public async Task<ReservationDTO> GetReservationById(int id)
