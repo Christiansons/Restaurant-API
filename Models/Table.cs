@@ -10,6 +10,6 @@ namespace Restaurant_API.Models
         [Required]
         public int Seats { get; set; }
 
-        public ICollection<Reservation>? Reservations { get; set; }
+        public ICollection<Reservation>? Reservations { get; set; } = new List<Reservation>();
     }
 }
