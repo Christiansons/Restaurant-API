@@ -17,7 +17,7 @@ namespace Restaurant_API.Controllers
         }
 
 		[HttpPost]
-		[Route("/{seats}")] //När det är en sak som ska in, ändå från body? Känns logiskt tvärtom dock
+		[Route("createTable/{seats}")] //När det är en sak som ska in, ändå från body? Känns logiskt tvärtom dock
 		public async Task<IActionResult> CreateTable(int seats)
 		{
 			if (seats < 1)
@@ -30,7 +30,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpDelete]
-		[Route("/{tableId}")]
+		[Route("delete/{tableId}")]
 		public async Task<IActionResult> DeleteTable(int tableId)
 		{
 			await _tableService.DeleteTable(tableId);
@@ -38,7 +38,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpGet]
-		[Route("/{tableId}")]
+		[Route("{tableId}")]
 		public async Task<ActionResult<TableDTO>> GetTableById(int tableId)
 		{
 			var table = await _tableService.GetTableByTableNr(tableId);
@@ -55,7 +55,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPut]
-		[Route("/{tableId}")]
+		[Route("update/{tableId}")]
 		public async Task<IActionResult> UpdateTable(int tableId, [FromBody]int seats)
 		{
 			await _tableService.UpdateTable(tableId, seats);

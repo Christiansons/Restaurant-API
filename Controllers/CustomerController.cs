@@ -36,7 +36,8 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateCustomer([FromBody]CustomerDTO dto)
+		[Route("createCustomer")]
+		public async Task<IActionResult> CreateCustomer([FromBody]CreateCustomerDTO dto)
 		{
 			if(dto == null)
 			{
@@ -54,7 +55,7 @@ namespace Restaurant_API.Controllers
 			return Ok();
 		}
 
-		[HttpGet("/{customerId}")]
+		[HttpGet("{customerId}")]
 		public async Task<ActionResult<CustomerDTO>> GetCustomerById(int customerId)
 		{
 			var customer = await _customerService.GetCustomerById(customerId);
@@ -62,10 +63,10 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPut]
-		[Route("/{id}")]
-		public async Task<IActionResult> UpdateCustomer(int id,[FromBody] CustomerDTO dto)
+		[Route("update/{customerId}")]
+		public async Task<IActionResult> UpdateCustomer(int customerId,[FromBody] CustomerDTO dto)
 		{
-			await _customerService.UpdateCustomer(id, dto);
+			await _customerService.UpdateCustomer(customerId, dto);
 			return Ok("Updated");
 		}
     }

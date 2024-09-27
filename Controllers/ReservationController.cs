@@ -17,6 +17,7 @@ namespace Restaurant_API.Controllers
         }
 
         [HttpPost]
+		[Route("createRes")]
 		//create reservation
 		public async Task<IActionResult> CreateReservation([FromBody]CreateReservationDTO dto)
 		{
@@ -31,7 +32,7 @@ namespace Restaurant_API.Controllers
 
 		//Get resrevation by id
 		[HttpGet]
-		[Route("/{reservationNumber}")]
+		[Route("{reservationNumber}")]
 		public async Task<ActionResult<CreateReservationDTO>> GetReservationById(int reservationNumber)
 		{
 			var reservation = await _reservationService.GetReservationById(reservationNumber);
@@ -40,7 +41,7 @@ namespace Restaurant_API.Controllers
 
 		//Delete reservation
 		[HttpDelete]
-		[Route("/{reservationNumber}")]
+		[Route("delete/{reservationNumber}")]
 		public async Task<IActionResult> DeleteReservation(int reservationNumber)
 		{
 			await _reservationService.DeleteReservation(reservationNumber);
@@ -55,7 +56,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPatch]
-		[Route("/{reservationNumber}")]
+		[Route("update/{reservationNumber}")]
 		public async Task<IActionResult> UpdateReservation(int reservationNumber, [FromBody]CreateReservationDTO updatedReservation)
 		{
 			await _reservationService.UpdateReservation(reservationNumber, updatedReservation);

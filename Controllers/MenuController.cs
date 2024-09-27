@@ -17,7 +17,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<DishDTO>>> GetMenu()
+		public async Task<ActionResult<IEnumerable<DishDTO>>> GetAllDishes()
 		{
 			//Denna eller table getAll?
 			var dishes = await _menuService.GetMenu();
@@ -29,7 +29,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpDelete]
-		[Route("/{dishId}")]
+		[Route("delete/{dishId}")]
 		public async Task<IActionResult> DeleteDish(int dishId)
 		{
 			await _menuService.DeleteDish(dishId);
@@ -37,6 +37,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPost]
+		[Route("createDish")]
 		public async Task<IActionResult> CreateDish([FromBody] DishDTO dish)
 		{
 			//testa allt här eller som på reservation?
@@ -61,7 +62,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPut]
-		[Route("/{dishId}")]
+		[Route("update/{dishId}")]
 		public async Task<IActionResult> UpdateDish(int dishId, [FromBody] DishDTO dto)
 		{
 			if (dto == null)
@@ -83,7 +84,7 @@ namespace Restaurant_API.Controllers
 			}
 		}
 
-		[HttpGet("/{dishId}")]
+		[HttpGet("{dishId}")]
 		public async Task<ActionResult<DishDTO>> GetDishById(int dishId)
 		{
 			var dish = await _menuService.GetDishById(dishId);
