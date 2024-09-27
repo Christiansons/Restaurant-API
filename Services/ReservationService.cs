@@ -23,34 +23,52 @@ namespace Restaurant_API.Services
 		{
 			var response = new ReservationResponseDTO();
 			
-			var customer = _customerRepo.GetCustomerById(reservationDto.customerId);
+			var customer = await _customerRepo.GetCustomerById(reservationDto.customerId);
 
 			if(customer == null)
 			{
 				response.AddError("User not found");
+				return response;
 			}
 
 			var tables = await _tableRepo.GetAllTables();
 
+			//var availableTablesTimeSlot = tables.Where(t => t.Reservations.Any(r => r.DateTimeFrom < reservationDto.timeFrom && r.DateTimeTo > reservationDto.timeFrom.AddHours(2)));
+			//if(availableTablesTimeSlot == null)
+			//{
+			//	response.AddError("No tables available during that timeslot");
+			//	return response;
+			//}
+
+   //         var availableTablesPartySize = tables.Where(t => t.Seats >= reservationDto.PartySize);
+   //         if (availableTablesPartySize == null)
+			//{
+			//	response.AddError("No table with your party size available");
+			//	return response;
+			//}
+
 			var availableTable = tables
 				.Where(t => t.Seats >= reservationDto.PartySize)
-				.Where(t => t.Reservations.Any(r => r.DateTimeFrom < reservationDto.timeFrom && r.DateTimeTo > reservationDto.timeFrom.AddHours(2)))
+				.Where(t => !t.Reservations.Any(r => !(reservationDto.timeFrom >= r.DateTimeTo || reservationDto.timeFrom.AddHours(2) <= r.DateTimeFrom)))
 				.FirstOrDefault();
 
 			if (availableTable == null)
 			{
 				response.AddError("No tables available for that time with your party size!");
-			}
-
-			if (!response.SuccessfulReservation)
-			{
 				return response;
 			}
+
+			// ***  Kan vara bra om man vill lägga till flera felmeddelanden ***
+
+			//if (!response.SuccessfulReservation)
+			//{
+			//	return response;
+			//}
 
 			await _reservationRepo.CreateReservation(new Reservation
 			{
 				CustomerIdFK = reservationDto.customerId,
-				TableNumberFK = reservationDto.TableNr,
+				TableNumberFK = availableTable.TableNumber,
 				DateTimeFrom = reservationDto.timeFrom,
 				DateTimeTo = reservationDto.timeFrom.AddHours(2),
 				PartySize = reservationDto.PartySize
