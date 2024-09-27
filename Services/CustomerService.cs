@@ -14,7 +14,7 @@ namespace Restaurant_API.Services
 		}
 
 
-		public async Task CreateCustomer(CustomerDTO customerDTO)
+		public async Task CreateCustomer(CreateCustomerDTO customerDTO)
 		{
 			if (customerDTO == null)
 			{
