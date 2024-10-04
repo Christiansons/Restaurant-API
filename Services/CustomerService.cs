@@ -38,6 +38,7 @@ namespace Restaurant_API.Services
 			var customers = await _customerRepo.GetAllCustomers();
 			return customers.Select(c => new CustomerDTO
 			{
+				Id = c.Id,
 				Name = c.Name,
 				PhoneNr = c.Phone,
 			});
