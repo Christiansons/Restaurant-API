@@ -44,7 +44,7 @@ namespace Restaurant_API.Repository
 
 		public async Task<IEnumerable<Customer>> GetAllCustomers()
 		{
-			return await _context.Customers.ToListAsync();
+			return await _context.Customers.Include(c => c.Reservations).ToListAsync();
 		}
 	}
 }

@@ -41,6 +41,16 @@ namespace Restaurant_API.Services
 				Id = c.Id,
 				Name = c.Name,
 				PhoneNr = c.Phone,
+				reservationDTOs = c.Reservations.Select(r => new GetReservationDTO
+				{
+					ReservationNumber = r.ReservationNumber,
+					CustomerName = r.Customer.Name,
+					PartySize = r.PartySize,
+					phoneNr = r.Customer.Phone,
+					TableNr = r.TableNumberFK,
+					timeFrom = r.DateTimeFrom,
+					timeTo = r.DateTimeTo,
+				})
 			});
 		}
 
