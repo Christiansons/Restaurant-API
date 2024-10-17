@@ -102,16 +102,19 @@ namespace Restaurant_API.Migrations
 
             modelBuilder.Entity("Restaurant_API.Models.Table", b =>
                 {
-                    b.Property<int>("TableNumber")
+                    b.Property<int>("TableId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TableNumber"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TableId"));
 
                     b.Property<int>("Seats")
                         .HasColumnType("int");
 
-                    b.HasKey("TableNumber");
+                    b.Property<int>("TableNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("TableId");
 
                     b.ToTable("Tables");
                 });

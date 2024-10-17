@@ -12,7 +12,7 @@ using Restaurant_API.Data;
 namespace Restaurant_API.Migrations
 {
     [DbContext(typeof(RestaurantContext))]
-    [Migration("20240927095417_init")]
+    [Migration("20241017235534_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -105,16 +105,19 @@ namespace Restaurant_API.Migrations
 
             modelBuilder.Entity("Restaurant_API.Models.Table", b =>
                 {
-                    b.Property<int>("TableNumber")
+                    b.Property<int>("TableId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TableNumber"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TableId"));
 
                     b.Property<int>("Seats")
                         .HasColumnType("int");
 
-                    b.HasKey("TableNumber");
+                    b.Property<int>("TableNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("TableId");
 
                     b.ToTable("Tables");
                 });

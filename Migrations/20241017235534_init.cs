@@ -44,13 +44,14 @@ namespace Restaurant_API.Migrations
                 name: "Tables",
                 columns: table => new
                 {
-                    TableNumber = table.Column<int>(type: "int", nullable: false)
+                    TableId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TableNumber = table.Column<int>(type: "int", nullable: false),
                     Seats = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tables", x => x.TableNumber);
+                    table.PrimaryKey("PK_Tables", x => x.TableId);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,7 +79,7 @@ namespace Restaurant_API.Migrations
                         name: "FK_Reservations_Tables_TableNumberFK",
                         column: x => x.TableNumberFK,
                         principalTable: "Tables",
-                        principalColumn: "TableNumber",
+                        principalColumn: "TableId",
                         onDelete: ReferentialAction.Cascade);
                 });
 

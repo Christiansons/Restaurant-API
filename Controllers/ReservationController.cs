@@ -63,5 +63,9 @@ namespace Restaurant_API.Controllers
 			await _reservationService.UpdateReservation(reservationNumber, updatedReservation);
 			return Ok("Updated");
 		}
+
+		//[HttpGet]
+		//[Route("availableTablesForDay/{date}")]
+		//public async Task<ActionResult<IEnumerable>>  
 	}
 }
