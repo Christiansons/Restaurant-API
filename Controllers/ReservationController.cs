@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant_API.Models;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Services.IServices;
 
 namespace Restaurant_API.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class ReservationController : ControllerBase
 	{

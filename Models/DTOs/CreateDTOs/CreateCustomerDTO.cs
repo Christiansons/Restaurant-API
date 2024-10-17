@@ -1,4 +1,4 @@
-﻿namespace Restaurant_API.Models.DTOs
+﻿namespace Restaurant_API.Models.DTOs.CreateDTOs
 {
     public class CreateCustomerDTO
     {

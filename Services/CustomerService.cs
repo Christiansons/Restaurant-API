@@ -1,11 +1,12 @@
 ﻿using Restaurant_API.Models;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Repository.IRepository;
 using Restaurant_API.Services.IServices;
 
 namespace Restaurant_API.Services
 {
-	public class CustomerService : ICustomerService
+    public class CustomerService : ICustomerService
 	{
 		private readonly ICustomerRepository _customerRepo;
 		public CustomerService(ICustomerRepository customerRepo)

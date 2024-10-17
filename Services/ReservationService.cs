@@ -1,12 +1,13 @@
 ﻿using Azure;
 using Restaurant_API.Models;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Repository.IRepository;
 using Restaurant_API.Services.IServices;
 
 namespace Restaurant_API.Services
 {
-	public class ReservationService: IReservationService
+    public class ReservationService: IReservationService
 	{
 		private readonly IReservationRepository _reservationRepo;
 		private readonly ITableRepository _tableRepo;
@@ -139,12 +140,10 @@ namespace Restaurant_API.Services
 			await _reservationRepo.UpdateReservation(reservation);
 		}
 
-		//Check if table available, if not return Choose another table!
 
-		//Save customer and table to reservation
+		public async Task GetAvailableTables()
+		{
 
-		//Save time and date for reserved table
-
-		// Välja ett datum, hur många, sedan kan man se om det är ledigt, jämför med bokningar det tiden
+		}
 	}
 }
