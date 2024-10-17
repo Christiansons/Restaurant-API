@@ -1,5 +1,6 @@
 ﻿using Restaurant_API.Models;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Repository.IRepository;
 using Restaurant_API.Services.IServices;
 
@@ -15,13 +16,14 @@ namespace Restaurant_API.Services
         }
 
 
-        public async Task CreateTable(int seats)
+        public async Task CreateTable(CreateTableDTO dto)
 		{
 			try
 			{
 				await _tableRepo.CreateTable(new Table
 				{
-					Seats = seats
+					TableNumber = dto.TableNr,
+					Seats = dto.Seats,
 				});
 			} catch (Exception)
 			{
@@ -53,6 +55,7 @@ namespace Restaurant_API.Services
 
 			return tables.Select(t=> new TableDTO
 			{
+				tableId = t.TableId,
 				Seats=t.Seats,
 				TableNr = t.TableNumber
 			}).ToList();
@@ -76,12 +79,13 @@ namespace Restaurant_API.Services
 		}
 
 		//Kolla med aldor bool?
-		public async Task<bool> UpdateTable(int tableId, int seats)
+		public async Task<bool> UpdateTable(int tableId, TableDTO dto)
 		{
 			try
 			{
 				var table = await _tableRepo.GetTableById(tableId);
-				table.Seats = seats;
+				table.Seats = dto.Seats;
+				table.TableNumber = dto.TableNr;
 				await _tableRepo.UpdateTable(table);
 				return true;
 			} catch (Exception)

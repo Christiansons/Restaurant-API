@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Services;
 using Restaurant_API.Services.IServices;
 
@@ -17,15 +18,15 @@ namespace Restaurant_API.Controllers
         }
 
 		[HttpPost]
-		[Route("createTable/{seats}")] //När det är en sak som ska in, ändå från body? Känns logiskt tvärtom dock
-		public async Task<IActionResult> CreateTable(int seats)
+		[Route("createTable")] //När det är en sak som ska in, ändå från body? Känns logiskt tvärtom dock
+		public async Task<IActionResult> CreateTable([FromBody]CreateTableDTO dto)
 		{
-			if (seats < 1)
+			if (dto.Seats < 1)
 			{
 				return BadRequest("Cant be empty table");
 			}
 
-			await _tableService.CreateTable(seats);
+			await _tableService.CreateTable(dto);
 			return Ok("Table created");
 		}
 
@@ -56,9 +57,9 @@ namespace Restaurant_API.Controllers
 
 		[HttpPut]
 		[Route("update/{tableId}")]
-		public async Task<IActionResult> UpdateTable(int tableId, [FromBody]int seats)
+		public async Task<IActionResult> UpdateTable(int tableId, [FromBody]TableDTO dto)
 		{
-			await _tableService.UpdateTable(tableId, seats);
+			await _tableService.UpdateTable(tableId, dto);
 			return Ok("Table updated");
 		}
     }
