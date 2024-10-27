@@ -10,5 +10,6 @@ namespace Restaurant_API.Services.IServices
 		public Task DeleteTable(int id);
 		public Task<TableDTO> GetTableByTableNr(int id);
 		public Task<IEnumerable<TableDTO>> GetAllTables();
-	}
+		public Task<IEnumerable<AvailableTimeForDateDTO>> GetAvialableTablesForDate(DateTime date, int partySize);
+    }
 }

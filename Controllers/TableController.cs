@@ -62,5 +62,13 @@ namespace Restaurant_API.Controllers
 			await _tableService.UpdateTable(tableId, dto);
 			return Ok("Table updated");
 		}
+
+        [HttpGet]
+        [Route("availableTables")]
+        public async Task<ActionResult<IEnumerable<AvailableTimeForDateDTO>>> GetAvailableTablesForDate(DateTime date, int partySize)
+		{
+			var availableTables = await _tableService.GetAvialableTablesForDate(date, partySize);
+			return Ok(availableTables);
+		}
     }
 }

@@ -61,7 +61,53 @@ namespace Restaurant_API.Services
 			}).ToList();
 		}
 
-		public async Task<TableDTO> GetTableByTableNr(int id)
+		//Gets available tables for specific date
+        public async Task<IEnumerable<AvailableTimeForDateDTO>> GetAvialableTablesForDate(DateTime date, int partySize)
+        {
+            List<(TimeSpan timeFrom, TimeSpan timeTo)> TimeSlots = new() //Lägga i global-fil?
+			{
+				(new TimeSpan(16, 0, 0), new TimeSpan(18, 0, 0) ),
+				(new TimeSpan(18, 0, 0), new TimeSpan(20, 0, 0) ),
+				(new TimeSpan(20, 0, 0), new TimeSpan(22, 0, 0) ),
+				(new TimeSpan(22, 0, 0), new TimeSpan(24, 0, 0) )
+			};
+
+            var allTables = await _tableRepo.GetAllTables();
+			
+			var availableSlots = new List<AvailableTimeForDateDTO>();
+
+			foreach(var slot in TimeSlots)
+			{
+
+				//Create slots for the actual date
+
+				var slotTime = new List<(DateTime timeFrom, DateTime timeTo)>
+				{
+					(date.Date.Add(slot.timeFrom),date.Date.Add(slot.timeTo))
+				};
+
+				var timeFrom = date.Date.Add(slot.timeFrom);
+                var timeTo = date.Date.Add(slot.timeTo);
+
+				bool isSlotAvailable = allTables.Any(t =>
+					t.Seats >= partySize &&
+					t.Reservations.All(tr =>
+						tr.DateTimeTo <= timeFrom || tr.DateTimeFrom >= timeTo));
+
+				availableSlots.Add(new()
+				{
+					IsAvailable = isSlotAvailable,
+					SlotStart = timeFrom,
+					SlotEnd = timeTo,
+				});
+            }
+
+			return availableSlots;
+        }
+
+		//
+
+        public async Task<TableDTO> GetTableByTableNr(int id)
 		{
 			try
 			{
