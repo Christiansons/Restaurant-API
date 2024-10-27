@@ -34,20 +34,6 @@ namespace Restaurant_API.Services
 
 			var tables = await _tableRepo.GetAllTables();
 
-			//var availableTablesTimeSlot = tables.Where(t => t.Reservations.Any(r => r.DateTimeFrom < reservationDto.timeFrom && r.DateTimeTo > reservationDto.timeFrom.AddHours(2)));
-			//if(availableTablesTimeSlot == null)
-			//{
-			//	response.AddError("No tables available during that timeslot");
-			//	return response;
-			//}
-
-   //         var availableTablesPartySize = tables.Where(t => t.Seats >= reservationDto.PartySize);
-   //         if (availableTablesPartySize == null)
-			//{
-			//	response.AddError("No table with your party size available");
-			//	return response;
-			//}
-
 			var availableTable = tables
 				.Where(t => t.Seats >= reservationDto.PartySize)
 				.Where(t => !t.Reservations.Any(r => !(reservationDto.timeFrom >= r.DateTimeTo || reservationDto.timeFrom.AddHours(2) <= r.DateTimeFrom)))
@@ -59,13 +45,6 @@ namespace Restaurant_API.Services
 				return response;
 			}
 
-			// ***  Kan vara bra om man vill lägga till flera felmeddelanden ***
-
-			//if (!response.SuccessfulReservation)
-			//{
-			//	return response;
-			//}
-
 			await _reservationRepo.CreateReservation(new Reservation
 			{
 				CustomerIdFK = reservationDto.customerId,
@@ -76,7 +55,12 @@ namespace Restaurant_API.Services
 			});
 			return response;
 		}
+// ***  Kan vara bra om man vill lägga till flera felmeddelanden ***
 
+			//if (!response.SuccessfulReservation)
+			//{
+			//	return response;
+			//}
 
 		public async Task<GetReservationDTO> GetReservationById(int id)
 		{
