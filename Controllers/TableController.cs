@@ -50,9 +50,8 @@ namespace Restaurant_API.Controllers
 		public async Task<ActionResult<IEnumerable<TableDTO>>> GetAllTables()
 		{
 			var tables = await _tableService.GetAllTables();
-			var tablesDto = tables.Select(t => new TableDTO { Seats = t.Seats, TableNr = t.TableNr }).ToList();
 
-			return Ok(tablesDto);
+			return Ok(tables);
 		}
 
 		[HttpPut]
