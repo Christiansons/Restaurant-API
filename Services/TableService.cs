@@ -18,19 +18,17 @@ namespace Restaurant_API.Services
 
         public async Task CreateTable(CreateTableDTO dto)
 		{
-			try
-			{
-				await _tableRepo.CreateTable(new Table
-				{
-					TableNumber = dto.TableNr,
-					Seats = dto.Seats,
-				});
-			} catch (Exception)
+            if(dto == null)
 			{
 				return;
 			}
-			
-		}
+
+			await _tableRepo.CreateTable(new Table
+			{
+				Seats = dto.Seats,
+				TableNumber = dto.TableNr,
+			});
+        }
 
 		public async Task DeleteTable(int id)
 		{
