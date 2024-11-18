@@ -38,14 +38,14 @@ namespace Restaurant_API.Controllers
 
 		[HttpPost]
 		[Route("createCustomer")]
-		public async Task<IActionResult> CreateCustomer([FromBody]CreateCustomerDTO dto)
+		public async Task<ActionResult<int>> CreateCustomer([FromBody]CreateCustomerDTO dto)
 		{
 			if(dto == null)
 			{
 				return BadRequest("Cant be empty");
 			}
-			await _customerService.CreateCustomer(dto);
-			return Ok(dto);
+			int id = await _customerService.CreateCustomer(dto);
+			return Ok(id);
 		}
 
 		[HttpDelete]
