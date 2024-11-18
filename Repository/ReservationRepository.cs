@@ -13,11 +13,11 @@ namespace Restaurant_API.Repository
             _context = context;
         }
 
-        public async Task<Reservation> CreateReservation(Reservation reservation)
+        public async Task<int> CreateReservation(Reservation reservation)
 		{
 			await _context.Reservations.AddAsync(reservation);
 			await _context.SaveChangesAsync();
-			return reservation;
+			return reservation.ReservationNumber;
 		}
 
 		public async Task DeleteReservation(Reservation reservation)
