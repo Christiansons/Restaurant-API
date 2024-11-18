@@ -15,18 +15,20 @@ namespace Restaurant_API.Services
 		}
 
 
-		public async Task CreateCustomer(CreateCustomerDTO customerDTO)
+		public async Task<int> CreateCustomer(CreateCustomerDTO customerDTO)
 		{
 			if (customerDTO == null)
 			{
-				return;
+				throw new ArgumentNullException(nameof(customerDTO));
 			}
 
-			await _customerRepo.CreateCustomer(new Customer
+			int id = await _customerRepo.CreateCustomer(new Customer
 			{
 				Name = customerDTO.Name,
 				Phone = customerDTO.PhoneNr
 			});
+
+			return id;
 		}
 
 		public async Task DeleteCustomer(int id)
