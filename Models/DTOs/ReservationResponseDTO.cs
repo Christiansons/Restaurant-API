@@ -6,7 +6,7 @@ namespace Restaurant_API.Models.DTOs
 	{
 		public bool SuccessfulReservation = true;
 		public List<string> Errors;
-		public CreateReservationDTO reservationDto;
+		public int reservationNumber;
 
         public ReservationResponseDTO()
         {
