@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Services.IServices;
 
 namespace Restaurant_API.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class CustomerController : ControllerBase
 	{
@@ -36,14 +37,15 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateCustomer([FromBody]CustomerDTO dto)
+		[Route("createCustomer")]
+		public async Task<ActionResult<int>> CreateCustomer([FromBody]CreateCustomerDTO dto)
 		{
 			if(dto == null)
 			{
 				return BadRequest("Cant be empty");
 			}
-			await _customerService.CreateCustomer(dto);
-			return Ok(dto);
+			int id = await _customerService.CreateCustomer(dto);
+			return Ok(id);
 		}
 
 		[HttpDelete]
@@ -54,7 +56,7 @@ namespace Restaurant_API.Controllers
 			return Ok();
 		}
 
-		[HttpGet("/{customerId}")]
+		[HttpGet("{customerId}")]
 		public async Task<ActionResult<CustomerDTO>> GetCustomerById(int customerId)
 		{
 			var customer = await _customerService.GetCustomerById(customerId);
@@ -62,10 +64,10 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPut]
-		[Route("/{id}")]
-		public async Task<IActionResult> UpdateCustomer(int id,[FromBody] CustomerDTO dto)
+		[Route("update/{customerId}")]
+		public async Task<IActionResult> UpdateCustomer(int customerId,[FromBody] CustomerDTO dto)
 		{
-			await _customerService.UpdateCustomer(id, dto);
+			await _customerService.UpdateCustomer(customerId, dto);
 			return Ok("Updated");
 		}
     }

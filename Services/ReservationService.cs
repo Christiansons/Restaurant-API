@@ -1,12 +1,13 @@
 ﻿using Azure;
 using Restaurant_API.Models;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Repository.IRepository;
 using Restaurant_API.Services.IServices;
 
 namespace Restaurant_API.Services
 {
-	public class ReservationService: IReservationService
+    public class ReservationService: IReservationService
 	{
 		private readonly IReservationRepository _reservationRepo;
 		private readonly ITableRepository _tableRepo;
@@ -23,41 +24,45 @@ namespace Restaurant_API.Services
 		{
 			var response = new ReservationResponseDTO();
 			
-			var customer = _customerRepo.GetCustomerById(reservationDto.customerId);
+			var customer = await _customerRepo.GetCustomerById(reservationDto.customerId);
 
 			if(customer == null)
 			{
 				response.AddError("User not found");
+				return response;
 			}
 
 			var tables = await _tableRepo.GetAllTables();
 
 			var availableTable = tables
 				.Where(t => t.Seats >= reservationDto.PartySize)
-				.Where(t => t.Reservations.Any(r => r.DateTimeFrom < reservationDto.timeFrom && r.DateTimeTo > reservationDto.timeFrom.AddHours(2)))
+				.Where(t => !t.Reservations.Any(r => !(reservationDto.timeFrom >= r.DateTimeTo || reservationDto.timeFrom.AddHours(2) <= r.DateTimeFrom)))
 				.FirstOrDefault();
 
 			if (availableTable == null)
 			{
 				response.AddError("No tables available for that time with your party size!");
-			}
-
-			if (!response.SuccessfulReservation)
-			{
 				return response;
 			}
 
-			await _reservationRepo.CreateReservation(new Reservation
+			var reservationNumber  = await _reservationRepo.CreateReservation(new Reservation
 			{
 				CustomerIdFK = reservationDto.customerId,
-				TableNumberFK = reservationDto.TableNr,
+				TableNumberFK = availableTable.TableNumber,
 				DateTimeFrom = reservationDto.timeFrom,
 				DateTimeTo = reservationDto.timeFrom.AddHours(2),
 				PartySize = reservationDto.PartySize
 			});
+			response.reservationNumber = reservationNumber;
+
 			return response;
 		}
+// ***  Kan vara bra om man vill lägga till flera felmeddelanden ***
 
+			//if (!response.SuccessfulReservation)
+			//{
+			//	return response;
+			//}
 
 		public async Task<GetReservationDTO> GetReservationById(int id)
 		{
@@ -109,7 +114,7 @@ namespace Restaurant_API.Services
 			await _reservationRepo.DeleteReservation(reservation);
 		}
 
-		public async Task UpdateReservation(int reservationNumber, CreateReservationDTO updatedReservation)
+		public async Task UpdateReservation(int reservationNumber, UpdateReservationDTO updatedReservation)
 		{
 			var reservation = await _reservationRepo.GetReservationById(reservationNumber);
 			reservation.TableNumberFK = updatedReservation.TableNr;
@@ -121,12 +126,10 @@ namespace Restaurant_API.Services
 			await _reservationRepo.UpdateReservation(reservation);
 		}
 
-		//Check if table available, if not return Choose another table!
 
-		//Save customer and table to reservation
+		public async Task GetAvailableTables()
+		{
 
-		//Save time and date for reserved table
-
-		// Välja ett datum, hur många, sedan kan man se om det är ledigt, jämför med bokningar det tiden
+		}
 	}
 }

@@ -1,10 +1,12 @@
-﻿namespace Restaurant_API.Models.DTOs
+﻿using Restaurant_API.Models.DTOs.CreateDTOs;
+
+namespace Restaurant_API.Models.DTOs
 {
-	public class ReservationResponseDTO
+    public class ReservationResponseDTO
 	{
 		public bool SuccessfulReservation = true;
 		public List<string> Errors;
-		public CreateReservationDTO reservationDto;
+		public int reservationNumber;
 
         public ReservationResponseDTO()
         {

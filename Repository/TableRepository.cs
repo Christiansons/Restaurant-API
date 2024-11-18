@@ -24,7 +24,7 @@ namespace Restaurant_API.Repository
 		//Ienum eller List? Man gör redan tolist, blir det mer effektivt?
 		public async Task<IEnumerable<Table>> GetAllTables()
 		{
-			return await _context.Tables.ToListAsync();
+			return await _context.Tables.Include(t=> t.Reservations).ToListAsync();
 		}
 
 		public async Task CreateTable(Table table)

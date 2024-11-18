@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Restaurant_API.Models;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Services.IServices;
 
 namespace Restaurant_API.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class ReservationController : ControllerBase
 	{
@@ -17,8 +18,9 @@ namespace Restaurant_API.Controllers
         }
 
         [HttpPost]
+		[Route("createRes")]
 		//create reservation
-		public async Task<IActionResult> CreateReservation([FromBody]CreateReservationDTO dto)
+		public async Task<ActionResult<int>> CreateReservation([FromBody]CreateReservationDTO dto)
 		{
 			ReservationResponseDTO response = await _reservationService.CreateReservation(dto);
 			if (!response.SuccessfulReservation)
@@ -26,13 +28,13 @@ namespace Restaurant_API.Controllers
 				return BadRequest(response.Errors); 
 			}
 
-			return Ok(response);
+			return Ok(response.reservationNumber);
 		}
 
 		//Get resrevation by id
 		[HttpGet]
-		[Route("/{reservationNumber}")]
-		public async Task<ActionResult<CreateReservationDTO>> GetReservationById(int reservationNumber)
+		[Route("{reservationNumber}")]
+		public async Task<ActionResult<GetReservationDTO>> GetReservationById(int reservationNumber)
 		{
 			var reservation = await _reservationService.GetReservationById(reservationNumber);
 			return Ok(reservation);
@@ -40,7 +42,7 @@ namespace Restaurant_API.Controllers
 
 		//Delete reservation
 		[HttpDelete]
-		[Route("/{reservationNumber}")]
+		[Route("delete/{reservationNumber}")]
 		public async Task<IActionResult> DeleteReservation(int reservationNumber)
 		{
 			await _reservationService.DeleteReservation(reservationNumber);
@@ -55,8 +57,8 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpPatch]
-		[Route("/{reservationNumber}")]
-		public async Task<IActionResult> UpdateReservation(int reservationNumber, [FromBody]CreateReservationDTO updatedReservation)
+		[Route("update/{reservationNumber}")]
+		public async Task<IActionResult> UpdateReservation(int reservationNumber, [FromBody]UpdateReservationDTO updatedReservation)
 		{
 			await _reservationService.UpdateReservation(reservationNumber, updatedReservation);
 			return Ok("Updated");

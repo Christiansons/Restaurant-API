@@ -35,7 +35,17 @@ namespace Restaurant_API
 			builder.Services.AddScoped<ICustomerService, CustomerService>();
 			builder.Services.AddScoped<IMenuService, MenuService>();
 
-			var app = builder.Build();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("LocalReact", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5174", "http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
@@ -48,8 +58,8 @@ namespace Restaurant_API
 
 			app.UseAuthorization();
 
-
-			app.MapControllers();
+            app.UseCors("LocalReact");
+            app.MapControllers();
 
 			app.Run();
 		}

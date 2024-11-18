@@ -51,6 +51,7 @@ namespace Restaurant_API.Services
 			var dishes = await _menuRepo.GetAllDishes();
 			var dishesDto =  dishes.Select(d => new DishDTO
 			{
+				Id = d.Id,
 				DishName = d.DishName,
 				IsAvailable = d.IsAvailable,
 				PriceInSek = d.PriceInSek

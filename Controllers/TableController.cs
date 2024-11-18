@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Services;
 using Restaurant_API.Services.IServices;
 
@@ -17,20 +18,20 @@ namespace Restaurant_API.Controllers
         }
 
 		[HttpPost]
-		[Route("/{seats}")] //När det är en sak som ska in, ändå från body? Känns logiskt tvärtom dock
-		public async Task<IActionResult> CreateTable(int seats)
+		[Route("createTable")] //När det är en sak som ska in, ändå från body? Känns logiskt tvärtom dock
+		public async Task<IActionResult> CreateTable([FromBody]CreateTableDTO dto)
 		{
-			if (seats < 1)
+			if (dto.Seats < 1)
 			{
 				return BadRequest("Cant be empty table");
 			}
 
-			await _tableService.CreateTable(seats);
+			await _tableService.CreateTable(dto);
 			return Ok("Table created");
 		}
 
 		[HttpDelete]
-		[Route("/{tableId}")]
+		[Route("delete/{tableId}")]
 		public async Task<IActionResult> DeleteTable(int tableId)
 		{
 			await _tableService.DeleteTable(tableId);
@@ -38,7 +39,7 @@ namespace Restaurant_API.Controllers
 		}
 
 		[HttpGet]
-		[Route("/{tableId}")]
+		[Route("{tableId}")]
 		public async Task<ActionResult<TableDTO>> GetTableById(int tableId)
 		{
 			var table = await _tableService.GetTableByTableNr(tableId);
@@ -49,17 +50,24 @@ namespace Restaurant_API.Controllers
 		public async Task<ActionResult<IEnumerable<TableDTO>>> GetAllTables()
 		{
 			var tables = await _tableService.GetAllTables();
-			var tablesDto = tables.Select(t => new TableDTO { Seats = t.Seats, TableNr = t.TableNr }).ToList();
 
-			return Ok(tablesDto);
+			return Ok(tables);
 		}
 
 		[HttpPut]
-		[Route("/{tableId}")]
-		public async Task<IActionResult> UpdateTable(int tableId, [FromBody]int seats)
+		[Route("update/{tableId}")]
+		public async Task<IActionResult> UpdateTable(int tableId, [FromBody]TableDTO dto)
 		{
-			await _tableService.UpdateTable(tableId, seats);
+			await _tableService.UpdateTable(tableId, dto);
 			return Ok("Table updated");
+		}
+
+        [HttpGet]
+        [Route("availableTables")]
+        public async Task<ActionResult<IEnumerable<AvailableTimeForDateDTO>>> GetAvailableTablesForDate(DateTime date, int partySize)
+		{
+			var availableTables = await _tableService.GetAvialableTablesForDate(date, partySize);
+			return Ok(availableTables);
 		}
     }
 }

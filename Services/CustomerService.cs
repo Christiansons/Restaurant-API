@@ -1,11 +1,12 @@
 ﻿using Restaurant_API.Models;
 using Restaurant_API.Models.DTOs;
+using Restaurant_API.Models.DTOs.CreateDTOs;
 using Restaurant_API.Repository.IRepository;
 using Restaurant_API.Services.IServices;
 
 namespace Restaurant_API.Services
 {
-	public class CustomerService : ICustomerService
+    public class CustomerService : ICustomerService
 	{
 		private readonly ICustomerRepository _customerRepo;
 		public CustomerService(ICustomerRepository customerRepo)
@@ -14,18 +15,20 @@ namespace Restaurant_API.Services
 		}
 
 
-		public async Task CreateCustomer(CustomerDTO customerDTO)
+		public async Task<int> CreateCustomer(CreateCustomerDTO customerDTO)
 		{
 			if (customerDTO == null)
 			{
-				return;
+				throw new ArgumentNullException(nameof(customerDTO));
 			}
 
-			await _customerRepo.CreateCustomer(new Customer
+			int id = await _customerRepo.CreateCustomer(new Customer
 			{
 				Name = customerDTO.Name,
 				Phone = customerDTO.PhoneNr
 			});
+
+			return id;
 		}
 
 		public async Task DeleteCustomer(int id)
@@ -38,8 +41,19 @@ namespace Restaurant_API.Services
 			var customers = await _customerRepo.GetAllCustomers();
 			return customers.Select(c => new CustomerDTO
 			{
+				Id = c.Id,
 				Name = c.Name,
 				PhoneNr = c.Phone,
+				reservationDTOs = c.Reservations.Select(r => new GetReservationDTO
+				{
+					ReservationNumber = r.ReservationNumber,
+					CustomerName = r.Customer.Name,
+					PartySize = r.PartySize,
+					phoneNr = r.Customer.Phone,
+					TableNr = r.TableNumberFK,
+					timeFrom = r.DateTimeFrom,
+					timeTo = r.DateTimeTo,
+				})
 			});
 		}
 

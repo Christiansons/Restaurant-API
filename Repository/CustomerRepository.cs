@@ -13,10 +13,12 @@ namespace Restaurant_API.Repository
             _context = context;
         }
 
-		public async Task CreateCustomer(Customer customer)
+		public async Task<int> CreateCustomer(Customer customer)
 		{
 			await _context.Customers.AddAsync(customer);
 			await _context.SaveChangesAsync();
+
+			return customer.Id;
 		}
 
 		public async Task<Customer> GetCustomerById(int id)
@@ -44,7 +46,7 @@ namespace Restaurant_API.Repository
 
 		public async Task<IEnumerable<Customer>> GetAllCustomers()
 		{
-			return await _context.Customers.ToListAsync();
+			return await _context.Customers.Include(c => c.Reservations).ToListAsync();
 		}
 	}
 }
