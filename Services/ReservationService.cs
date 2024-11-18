@@ -45,7 +45,7 @@ namespace Restaurant_API.Services
 				return response;
 			}
 
-			await _reservationRepo.CreateReservation(new Reservation
+			var reservationNumber  = await _reservationRepo.CreateReservation(new Reservation
 			{
 				CustomerIdFK = reservationDto.customerId,
 				TableNumberFK = availableTable.TableNumber,
@@ -53,6 +53,8 @@ namespace Restaurant_API.Services
 				DateTimeTo = reservationDto.timeFrom.AddHours(2),
 				PartySize = reservationDto.PartySize
 			});
+			response.reservationNumber = reservationNumber;
+
 			return response;
 		}
 // ***  Kan vara bra om man vill lägga till flera felmeddelanden ***
@@ -112,7 +114,7 @@ namespace Restaurant_API.Services
 			await _reservationRepo.DeleteReservation(reservation);
 		}
 
-		public async Task UpdateReservation(int reservationNumber, CreateReservationDTO updatedReservation)
+		public async Task UpdateReservation(int reservationNumber, UpdateReservationDTO updatedReservation)
 		{
 			var reservation = await _reservationRepo.GetReservationById(reservationNumber);
 			reservation.TableNumberFK = updatedReservation.TableNr;

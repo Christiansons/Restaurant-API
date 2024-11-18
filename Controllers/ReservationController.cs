@@ -20,7 +20,7 @@ namespace Restaurant_API.Controllers
         [HttpPost]
 		[Route("createRes")]
 		//create reservation
-		public async Task<IActionResult> CreateReservation([FromBody]CreateReservationDTO dto)
+		public async Task<ActionResult<int>> CreateReservation([FromBody]CreateReservationDTO dto)
 		{
 			ReservationResponseDTO response = await _reservationService.CreateReservation(dto);
 			if (!response.SuccessfulReservation)
@@ -28,13 +28,13 @@ namespace Restaurant_API.Controllers
 				return BadRequest(response.Errors); 
 			}
 
-			return Ok(response);
+			return Ok(response.reservationNumber);
 		}
 
 		//Get resrevation by id
 		[HttpGet]
 		[Route("{reservationNumber}")]
-		public async Task<ActionResult<CreateReservationDTO>> GetReservationById(int reservationNumber)
+		public async Task<ActionResult<GetReservationDTO>> GetReservationById(int reservationNumber)
 		{
 			var reservation = await _reservationService.GetReservationById(reservationNumber);
 			return Ok(reservation);
@@ -58,7 +58,7 @@ namespace Restaurant_API.Controllers
 
 		[HttpPatch]
 		[Route("update/{reservationNumber}")]
-		public async Task<IActionResult> UpdateReservation(int reservationNumber, [FromBody]CreateReservationDTO updatedReservation)
+		public async Task<IActionResult> UpdateReservation(int reservationNumber, [FromBody]UpdateReservationDTO updatedReservation)
 		{
 			await _reservationService.UpdateReservation(reservationNumber, updatedReservation);
 			return Ok("Updated");
